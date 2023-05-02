@@ -1,0 +1,17 @@
+SETUP:
+--Limpa Registradores
+LDI R0, $0  -- Compara se Base tempo e 0
+LDI R1, $0  -- Compara se Base tempo e 0
+LDI R2, $0  -- Compara se Base tempo e 0
+LDI R3, $0  -- Compara se Base tempo e 0
+
+MAIN:
+LDA R1, @357  -- Le o valor da Base Tempo e coloca em R1
+CEQ R1, @10 -- Compara se Base tempo e 0
+JSR @INCREMENTADOR
+JMP @MAIN
+
+INCREMENTADOR:
+LDI R1, $0  -- Compara se Base tempo e 0
+LDI R2, $0  -- Compara se Base tempo e 0
+LDI R3, $0  -- Compara se Base tempo e 0
