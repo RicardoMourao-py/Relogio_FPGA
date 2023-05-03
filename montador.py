@@ -10,7 +10,7 @@ def dec_to_hex(num):
     hex_num = hex_num.zfill(3) # preenche com zeros à esquerda até ter três dígitos
     return hex_num
 
-# limpa instruções do arquivo e guarda
+#  ler todo arquivo e pega todas labels
 armazena_labels = {}
 cont=0
 for i in linhas:
@@ -38,7 +38,7 @@ for i in linhas:
     # Verifica instrução
     else:
         instrucao, reg_label = linha.split(',')[0].split(' ')[0], linha.split(',')[0].split(' ')[1]
-        resultado = f'temp({cont}) := {instrucao} & '
+        resultado = f'tmp({cont}) := {instrucao} & '
 
         # verificar se reg_label é registrador ou label
         if reg_label[0] == 'R':
@@ -47,7 +47,7 @@ for i in linhas:
         if reg_label[0] == '@':
             # converte endereço da label e NAO ACEITA COMENTARIOS
             conv = dec_to_hex(armazena_labels[reg_label[1:]])
-            resultado = f"temp({cont}) := {instrucao} & R0 & '{conv[0]}' & x\"{conv[1:]}\";   --pula para a linha {armazena_labels[reg_label[1:]]}"
+            resultado = f"tmp({cont}) := {instrucao} & R0 & '{conv[0]}' & x\"{conv[1:]}\";   --pula para a linha {armazena_labels[reg_label[1:]]}"
         
         if reg_label[0] != '@' and reg_label[0] == 'R':
             # OBRIGATORIO TER COMENTARIOS EM CADA INSTRUCAO
