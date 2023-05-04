@@ -136,18 +136,26 @@ Chaves_e_Botoes: entity work.chaves_e_botoes
 --						CLK_50 => CLOCK_50,
 --						Addr => Data_Address,
 --						WR => Wr,
---						KEY0 => KEY(0),
---						HabilitaLeituraKey0 => (Rd and Data_Address(5) and Saida_Decoder2(0) and Saida_Decoder1(5)),
+--						KEY0 => KEY(3),
+--						HabilitaLeituraKey0 => (Rd and Data_Address(5) and Saida_Decoder2(3) and Saida_Decoder1(5)),
 --						leituraKey0 => Data_IN
 --					);
 
 ------- Base de Tempo ---------------------------------------------------------------
 limpaLeitura_bt <= (WR and Data_Address(8) and Data_Address(7) and Data_Address(6) and Data_Address(5) and Data_Address(4) and Data_Address(3) and Data_Address(2) and Data_Address(1) and Data_Address(0));
 
-interfaceBaseTempo : entity work.divisorGenerico_e_Interface
+interfaceBaseTempoLento : entity work.divisorGenerico_e_Interface generic map(divisor => 25000000)
               port map (
 					  clk => CLK,
 					  habilitaLeitura => (Rd and Data_Address(5) and Saida_Decoder2(0) and Saida_Decoder1(5)),
+					  limpaLeitura => limpaLeitura_bt,
+					  leituraUmSegundo => Data_IN(0)
+				  );
+
+interfaceBaseTempoRapido : entity work.divisorGenerico_e_Interface generic map(divisor => 25000)
+              port map (
+					  clk => CLK,
+					  habilitaLeitura => (Rd and Data_Address(5) and Saida_Decoder2(1) and Saida_Decoder1(5)),
 					  limpaLeitura => limpaLeitura_bt,
 					  leituraUmSegundo => Data_IN(0)
 				  );

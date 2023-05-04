@@ -82,150 +82,157 @@ tmp(29) := STA & R0 & '0' & x"0F";   -- MEM[15] = R0 = 0
 
 ------------------------------------ LOGICA ---------------------------------------------------------
 -- Realiza a leitura do segundo
-tmp(30) := LDA & R7 & '1' & x"60";   -- Carrega o registrador com a leitura do segundo
-tmp(31) := ANDI & R7 & '0' & x"01";   -- Limpa lixo da leitura segundo
-tmp(32) := CEQ & R7 & '0' & x"01";   -- Se o registrador for igual a 1
-tmp(33) := JEQ & R0 & '0' & x"23";   --pula para a linha 35
-tmp(34) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
+tmp(30) := LDA & R0 & '1' & x"63";   --lÃª KEY3
+tmp(31) := CEQ & R0 & '0' & x"00";   -- Se clicou no KEY3
+tmp(32) := JEQ & R0 & '0' & x"26";   --pula para a linha 38
+
+tmp(33) := LDA & R7 & '1' & x"60";   -- Carrega o registrador com a leitura do segundo (Lento)
+tmp(34) := ANDI & R7 & '0' & x"01";   -- Limpa lixo da leitura segundo
+tmp(35) := CEQ & R7 & '0' & x"01";   -- Se o registrador for igual a 1
+tmp(36) := JEQ & R0 & '0' & x"2B";   --pula para a linha 43
+tmp(37) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
+
+tmp(38) := LDA & R7 & '1' & x"61";   -- Carrega o registrador com a leitura do segundo (Rapido)
+tmp(39) := ANDI & R7 & '0' & x"01";   -- Limpa lixo da leitura segundo
+tmp(40) := CEQ & R7 & '0' & x"01";   -- Se o registrador for igual a 1
+tmp(41) := JEQ & R0 & '0' & x"2B";   --pula para a linha 43
+tmp(42) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
 
 -------- Conta os segundos -------------------------
 -- Unidade dos segundos
-tmp(35) := STA & R0 & '1' & x"FF";   -- Limpa o flipflop dos segundos
-tmp(36) := LDA & R1 & '0' & x"0A";   -- Carrega o registrador com MEM[10]
+tmp(43) := STA & R0 & '1' & x"FF";   -- Limpa o flipflop dos segundos (KEY0)
+tmp(44) := STA & R0 & '1' & x"FE";   -- Limpa o flipflop dos segundos (KEY1)
+tmp(45) := LDA & R1 & '0' & x"0A";   -- Carrega o registrador com MEM[10]
 
-tmp(37) := CEQ & R1 & '0' & x"09";   -- Se o registrador for igual a 9
-tmp(38) := JEQ & R0 & '0' & x"2B";   --pula para a linha 43
+tmp(46) := CEQ & R1 & '0' & x"09";   -- Se o registrador for igual a 9
+tmp(47) := JEQ & R0 & '0' & x"34";   --pula para a linha 52
 
-tmp(39) := SOMA & R1 & '0' & x"01";   -- R1 = R1 + MEM[1]
-tmp(40) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
-tmp(41) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
-tmp(42) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
+tmp(48) := SOMA & R1 & '0' & x"01";   -- R1 = R1 + MEM[1]
+tmp(49) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
+tmp(50) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
+tmp(51) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
 
 -- Dezena dos segundos
-tmp(43) := LDA & R2 & '0' & x"0B";   -- Carrega o registrador com MEM[11]
-tmp(44) := CEQ & R2 & '0' & x"05";   -- Se o registrador for igual a 5
-tmp(45) := JEQ & R0 & '0' & x"36";   --pula para a linha 54
+tmp(52) := LDA & R2 & '0' & x"0B";   -- Carrega o registrador com MEM[11]
+tmp(53) := CEQ & R2 & '0' & x"05";   -- Se o registrador for igual a 5
+tmp(54) := JEQ & R0 & '0' & x"3F";   --pula para a linha 63
 
-tmp(46) := LDI & R1 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(47) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
-tmp(48) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
+tmp(55) := LDI & R1 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(56) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
+tmp(57) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
 
-tmp(49) := LDA & R2 & '0' & x"0B";   -- Carrega o registrador com MEM[11]
-tmp(50) := SOMA & R2 & '0' & x"01";   -- R2 = R2 + MEM[1]
-tmp(51) := STA & R2 & '0' & x"0B";   -- Armazena o valor do registrador em MEM[11] (dezena segundo)
-tmp(52) := STA & R2 & '1' & x"21";   -- Armazena o valor do registrador em HEX1
-tmp(53) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
+tmp(58) := LDA & R2 & '0' & x"0B";   -- Carrega o registrador com MEM[11]
+tmp(59) := SOMA & R2 & '0' & x"01";   -- R2 = R2 + MEM[1]
+tmp(60) := STA & R2 & '0' & x"0B";   -- Armazena o valor do registrador em MEM[11] (dezena segundo)
+tmp(61) := STA & R2 & '1' & x"21";   -- Armazena o valor do registrador em HEX1
+tmp(62) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
 
 -------- Conta os minutos -------------------------
 -- Unidade dos Minutos
-tmp(54) := LDA & R3 & '0' & x"0C";   -- Carrega o registrador com MEM[12]
-tmp(55) := CEQ & R3 & '0' & x"09";   -- Se o registrador for igual a 9
-tmp(56) := JEQ & R0 & '0' & x"44";   --pula para a linha 68
-
-tmp(57) := LDI & R1 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(58) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
-tmp(59) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
-
-tmp(60) := LDI & R2 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(61) := STA & R2 & '0' & x"0B";   -- Armazena o valor do registrador em MEM[11] (dezena segundo)
-tmp(62) := STA & R2 & '1' & x"21";   -- Armazena o valor do registrador em HEX1
-
 tmp(63) := LDA & R3 & '0' & x"0C";   -- Carrega o registrador com MEM[12]
-tmp(64) := SOMA & R3 & '0' & x"01";   -- R3 = R3 + MEM[1]
-tmp(65) := STA & R3 & '0' & x"0C";   -- Armazena o valor do registrador em MEM[12] (unidade minuto)
-tmp(66) := STA & R3 & '1' & x"22";   -- Armazena o valor do registrador em HEX2
-tmp(67) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
+tmp(64) := CEQ & R3 & '0' & x"09";   -- Se o registrador for igual a 9
+tmp(65) := JEQ & R0 & '0' & x"4D";   --pula para a linha 77
+
+tmp(66) := LDI & R1 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(67) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
+tmp(68) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
+
+tmp(69) := LDI & R2 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(70) := STA & R2 & '0' & x"0B";   -- Armazena o valor do registrador em MEM[11] (dezena segundo)
+tmp(71) := STA & R2 & '1' & x"21";   -- Armazena o valor do registrador em HEX1
+
+tmp(72) := LDA & R3 & '0' & x"0C";   -- Carrega o registrador com MEM[12]
+tmp(73) := SOMA & R3 & '0' & x"01";   -- R3 = R3 + MEM[1]
+tmp(74) := STA & R3 & '0' & x"0C";   -- Armazena o valor do registrador em MEM[12] (unidade minuto)
+tmp(75) := STA & R3 & '1' & x"22";   -- Armazena o valor do registrador em HEX2
+tmp(76) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
 
 -- Dezenas dos Minutos
-tmp(68) := LDA & R4 & '0' & x"0D";   -- Carrega o registrador com MEM[13]
-tmp(69) := CEQ & R4 & '0' & x"05";   -- Se o registrador for igual a 5
-tmp(70) := JEQ & R0 & '0' & x"55";   --pula para a linha 85
+tmp(77) := LDA & R4 & '0' & x"0D";   -- Carrega o registrador com MEM[13]
+tmp(78) := CEQ & R4 & '0' & x"05";   -- Se o registrador for igual a 5
+tmp(79) := JEQ & R0 & '0' & x"5E";   --pula para a linha 94
 
-tmp(71) := LDI & R1 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(72) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
-tmp(73) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
+tmp(80) := LDI & R1 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(81) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
+tmp(82) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
 
-tmp(74) := LDI & R2 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(75) := STA & R2 & '0' & x"0B";   -- Armazena o valor do registrador em MEM[11] (dezena segundo)
-tmp(76) := STA & R2 & '1' & x"21";   -- Armazena o valor do registrador em HEX1
+tmp(83) := LDI & R2 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(84) := STA & R2 & '0' & x"0B";   -- Armazena o valor do registrador em MEM[11] (dezena segundo)
+tmp(85) := STA & R2 & '1' & x"21";   -- Armazena o valor do registrador em HEX1
 
-tmp(77) := LDI & R3 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(78) := STA & R3 & '0' & x"0C";   -- Armazena o valor do registrador em MEM[12] (unidade minuto)
-tmp(79) := STA & R3 & '1' & x"22";   -- Armazena o valor do registrador em HEX2
+tmp(86) := LDI & R3 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(87) := STA & R3 & '0' & x"0C";   -- Armazena o valor do registrador em MEM[12] (unidade minuto)
+tmp(88) := STA & R3 & '1' & x"22";   -- Armazena o valor do registrador em HEX2
 
-tmp(80) := LDA & R4 & '0' & x"0D";   -- Carrega o registrador com MEM[13]
-tmp(81) := SOMA & R4 & '0' & x"01";   -- R4 = R4 + MEM[1]
-tmp(82) := STA & R4 & '0' & x"0D";   -- Armazena o valor do registrador em MEM[13] (dezena minuto)
-tmp(83) := STA & R4 & '1' & x"23";   -- Armazena o valor do registrador em HEX3
-tmp(84) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
+tmp(89) := LDA & R4 & '0' & x"0D";   -- Carrega o registrador com MEM[13]
+tmp(90) := SOMA & R4 & '0' & x"01";   -- R4 = R4 + MEM[1]
+tmp(91) := STA & R4 & '0' & x"0D";   -- Armazena o valor do registrador em MEM[13] (dezena minuto)
+tmp(92) := STA & R4 & '1' & x"23";   -- Armazena o valor do registrador em HEX3
+tmp(93) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
 
 -------- Conta as Horas -------------------------
 -- Unidade das Horas
-tmp(85) := LDA & R5 & '0' & x"0E";   -- Carrega o registrador com MEM[14]
-tmp(86) := CEQ & R5 & '0' & x"09";   -- Se o registrador for igual a 9
-tmp(87) := JEQ & R0 & '0' & x"6C";   --pula para a linha 108
+tmp(94) := LDA & R5 & '0' & x"0E";   -- Carrega o registrador com MEM[14]
+tmp(95) := CEQ & R5 & '0' & x"09";   -- Se o registrador for igual a 9
+tmp(96) := JEQ & R0 & '0' & x"75";   --pula para a linha 117
 
-tmp(88) := LDA & R5 & '0' & x"0E";   -- Carrega o registrador com MEM[14]
-tmp(89) := CEQ & R5 & '0' & x"03";   -- Se o registrador for igual a 3
-tmp(90) := JEQ & R0 & '0' & x"80";   --pula para a linha 128
+tmp(97) := LDA & R5 & '0' & x"0E";   -- Carrega o registrador com MEM[14]
+tmp(98) := CEQ & R5 & '0' & x"03";   -- Se o registrador for igual a 3
+tmp(99) := JEQ & R0 & '0' & x"89";   --pula para a linha 137
 
-tmp(91) := LDI & R1 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(92) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
-tmp(93) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
+tmp(100) := LDI & R1 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(101) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
+tmp(102) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
 
-tmp(94) := LDI & R2 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(95) := STA & R2 & '0' & x"0B";   -- Armazena o valor do registrador em MEM[11] (dezena segundo)
-tmp(96) := STA & R2 & '1' & x"21";   -- Armazena o valor do registrador em HEX1
+tmp(103) := LDI & R2 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(104) := STA & R2 & '0' & x"0B";   -- Armazena o valor do registrador em MEM[11] (dezena segundo)
+tmp(105) := STA & R2 & '1' & x"21";   -- Armazena o valor do registrador em HEX1
 
-tmp(97) := LDI & R3 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(98) := STA & R3 & '0' & x"0C";   -- Armazena o valor do registrador em MEM[12] (unidade minuto)
-tmp(99) := STA & R3 & '1' & x"22";   -- Armazena o valor do registrador em HEX2
+tmp(106) := LDI & R3 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(107) := STA & R3 & '0' & x"0C";   -- Armazena o valor do registrador em MEM[12] (unidade minuto)
+tmp(108) := STA & R3 & '1' & x"22";   -- Armazena o valor do registrador em HEX2
 
-tmp(100) := LDI & R4 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(101) := STA & R4 & '0' & x"0D";   -- Armazena o valor do registrador em MEM[13] (dezena minuto)
-tmp(102) := STA & R4 & '1' & x"23";   -- Armazena o valor do registrador em HEX3
+tmp(109) := LDI & R4 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(110) := STA & R4 & '0' & x"0D";   -- Armazena o valor do registrador em MEM[13] (dezena minuto)
+tmp(111) := STA & R4 & '1' & x"23";   -- Armazena o valor do registrador em HEX3
 
-tmp(103) := LDA & R5 & '0' & x"0E";   -- Carrega o registrador com MEM[14]
-tmp(104) := SOMA & R5 & '0' & x"01";   -- R5 = R5 + MEM[1]
-tmp(105) := STA & R5 & '0' & x"0E";   -- Armazena o valor do registrador em MEM[14] (unidade hora)
-tmp(106) := STA & R5 & '1' & x"24";   -- Armazena o valor do registrador em HEX4
-tmp(107) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
+tmp(112) := LDA & R5 & '0' & x"0E";   -- Carrega o registrador com MEM[14]
+tmp(113) := SOMA & R5 & '0' & x"01";   -- R5 = R5 + MEM[1]
+tmp(114) := STA & R5 & '0' & x"0E";   -- Armazena o valor do registrador em MEM[14] (unidade hora)
+tmp(115) := STA & R5 & '1' & x"24";   -- Armazena o valor do registrador em HEX4
+tmp(116) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
 
 -- Dezena das Horas
--- LDA R6, @15   -- Carrega o registrador com MEM[15]
--- CEQ R6, @2    -- Se o registrador for igual a 2
--- JEQ @VERIFICA_4
+tmp(117) := LDI & R1 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(118) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
+tmp(119) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
 
-tmp(108) := LDI & R1 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(109) := STA & R1 & '0' & x"0A";   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
-tmp(110) := STA & R1 & '1' & x"20";   -- Armazena o valor do registrador em HEX0
+tmp(120) := LDI & R2 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(121) := STA & R2 & '0' & x"0B";   -- Armazena o valor do registrador em MEM[11] (dezena segundo)
+tmp(122) := STA & R2 & '1' & x"21";   -- Armazena o valor do registrador em HEX1
 
-tmp(111) := LDI & R2 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(112) := STA & R2 & '0' & x"0B";   -- Armazena o valor do registrador em MEM[11] (dezena segundo)
-tmp(113) := STA & R2 & '1' & x"21";   -- Armazena o valor do registrador em HEX1
+tmp(123) := LDI & R3 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(124) := STA & R3 & '0' & x"0C";   -- Armazena o valor do registrador em MEM[12] (unidade minuto)
+tmp(125) := STA & R3 & '1' & x"22";   -- Armazena o valor do registrador em HEX2
 
-tmp(114) := LDI & R3 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(115) := STA & R3 & '0' & x"0C";   -- Armazena o valor do registrador em MEM[12] (unidade minuto)
-tmp(116) := STA & R3 & '1' & x"22";   -- Armazena o valor do registrador em HEX2
+tmp(126) := LDI & R4 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(127) := STA & R4 & '0' & x"0D";   -- Armazena o valor do registrador em MEM[13] (dezena minuto)
+tmp(128) := STA & R4 & '1' & x"23";   -- Armazena o valor do registrador em HEX3
 
-tmp(117) := LDI & R4 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(118) := STA & R4 & '0' & x"0D";   -- Armazena o valor do registrador em MEM[13] (dezena minuto)
-tmp(119) := STA & R4 & '1' & x"23";   -- Armazena o valor do registrador em HEX3
+tmp(129) := LDI & R5 & '0' & x"00";   -- Carrega o registrador com o valor zero
+tmp(130) := STA & R5 & '0' & x"0E";   -- Armazena o valor do registrador em MEM[14] (unidade hora)
+tmp(131) := STA & R5 & '1' & x"24";   -- Armazena o valor do registrador em HEX4
 
-tmp(120) := LDI & R5 & '0' & x"00";   -- Carrega o registrador com o valor zero
-tmp(121) := STA & R5 & '0' & x"0E";   -- Armazena o valor do registrador em MEM[14] (unidade hora)
-tmp(122) := STA & R5 & '1' & x"24";   -- Armazena o valor do registrador em HEX4
+tmp(132) := LDA & R6 & '0' & x"0F";   -- Carrega o registrador com MEM[15]
+tmp(133) := SOMA & R6 & '0' & x"01";   -- R6 = R6 + MEM[1]
+tmp(134) := STA & R6 & '0' & x"0F";   -- Armazena o valor do registrador em MEM[14] (unidade hora)
+tmp(135) := STA & R6 & '1' & x"25";   -- Armazena o valor do registrador em HEX5
+tmp(136) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
 
-tmp(123) := LDA & R6 & '0' & x"0F";   -- Carrega o registrador com MEM[15]
-tmp(124) := SOMA & R6 & '0' & x"01";   -- R6 = R6 + MEM[1]
-tmp(125) := STA & R6 & '0' & x"0F";   -- Armazena o valor do registrador em MEM[14] (unidade hora)
-tmp(126) := STA & R6 & '1' & x"25";   -- Armazena o valor do registrador em HEX5
-tmp(127) := JMP & R0 & '0' & x"1E";   --pula para a linha 30
-
-tmp(128) := LDA & R6 & '0' & x"0F";   -- Carrega o registrador com MEM[14]
-tmp(129) := CEQ & R6 & '0' & x"02";   -- Se o registrador for igual a 2
-tmp(130) := JEQ & R0 & '0' & x"00";   --pula para a linha 0
-tmp(131) := JMP & R0 & '0' & x"5B";   --pula para a linha 91
+tmp(137) := LDA & R6 & '0' & x"0F";   -- Carrega o registrador com MEM[14]
+tmp(138) := CEQ & R6 & '0' & x"02";   -- Se o registrador for igual a 2
+tmp(139) := JEQ & R0 & '0' & x"00";   --pula para a linha 0
+tmp(140) := JMP & R0 & '0' & x"64";   --pula para a linha 100
         return tmp;
     end initMemory;
 

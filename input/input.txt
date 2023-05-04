@@ -39,7 +39,22 @@ STA R0, @15    -- MEM[15] = R0 = 0
 ------------------------------------ LOGICA ---------------------------------------------------------
 -- Realiza a leitura do segundo
 LEITURA_SEGUNDO:
-LDA R7, @352  -- Carrega o registrador com a leitura do segundo
+LDA R0, @355     --lê KEY3
+CEQ R0, @1    -- Se clicou no KEY3
+JEQ @LEITURA_RAPIDA
+
+--LDA R0, @354     --lê KEY2
+--CEQ R0, @1    -- Se clicou no KEY2
+--JEQ @AJUSTA_HORARIO
+
+LDA R7, @352  -- Carrega o registrador com a leitura do segundo (Lento)
+ANDI R7, $1   -- Limpa lixo da leitura segundo
+CEQ R7, @1    -- Se o registrador for igual a 1
+JEQ @INCREMENTA_SEGUNDO_UNIDADE
+JMP @LEITURA_SEGUNDO
+
+LEITURA_RAPIDA:
+LDA R7, @353  -- Carrega o registrador com a leitura do segundo (Rapido)
 ANDI R7, $1   -- Limpa lixo da leitura segundo
 CEQ R7, @1    -- Se o registrador for igual a 1
 JEQ @INCREMENTA_SEGUNDO_UNIDADE
@@ -48,7 +63,8 @@ JMP @LEITURA_SEGUNDO
 -------- Conta os segundos -------------------------
 -- Unidade dos segundos
 INCREMENTA_SEGUNDO_UNIDADE:
-STA R0, @511  -- Limpa o flipflop dos segundos
+STA R0, @511  -- Limpa o flipflop dos segundos (KEY0)
+STA R0, @510  -- Limpa o flipflop dos segundos (KEY1)
 LDA R1, @10   -- Carrega o registrador com MEM[10]
 
 CEQ R1, @9    -- Se o registrador for igual a 9
@@ -156,10 +172,6 @@ JMP @LEITURA_SEGUNDO
 
 -- Dezena das Horas
 INCREMENTA_HORA_DEZENA:
--- LDA R6, @15   -- Carrega o registrador com MEM[15]
--- CEQ R6, @2    -- Se o registrador for igual a 2
--- JEQ @VERIFICA_4
-
 LDI R1, $0    -- Carrega o registrador com o valor zero
 STA R1, @10   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
 STA R1, @288  -- Armazena o valor do registrador em HEX0
@@ -186,8 +198,24 @@ STA R6, @15  -- Armazena o valor do registrador em MEM[14] (unidade hora)
 STA R6, @293  -- Armazena o valor do registrador em HEX5
 JMP @LEITURA_SEGUNDO
 
+-- Limite 23:59
 VERIFICA_2:
 LDA R6, @15   -- Carrega o registrador com MEM[14]
 CEQ R6, @2    -- Se o registrador for igual a 2
 JEQ @SETUP
 JMP @CONTINUA
+
+------------------------------------ AJUSTE HORARIO ------------------------------------------------------
+-- AJUSTA_HORARIO:
+
+--LDI R0, $1    -- Carrega o registrador com o valor zero
+--STA R0, @256  -- Armazena o valor do registrador em LEDR0 - LEDR7
+
+--LDA R0, @320  -- carrega a leitura das chaves SW0-SW7 no registrador
+--STA R0, @288  -- Escreve em HEX0 o valor do registrador
+
+--LDA R0, @354     --lê KEY2
+--CEQ R0, @1    -- Se clicou no KEY2
+--JEQ @INCREMENTA_SEGUNDO_UNIDADE
+--JMP @AJUSTA_HORARIO
+
