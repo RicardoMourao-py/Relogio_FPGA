@@ -51,12 +51,12 @@ tristate_SW9 :  entity work.buffer_3_state_8portas
 --										habilita =>  (Rd and Data_Address_5 and Endereco(1) and Saida_Decoder1_5), 
 --										saida => Data_IN
 --										);
-tristate_Key2 :  entity work.buffer_3_state_8portas
-							port map(
-										entrada => "0000000" & KEY2, 
-										habilita =>  (Rd and Data_Address_5 and Endereco(2) and Saida_Decoder1_5), 
-										saida => Data_IN
-										);
+--tristate_Key2 :  entity work.buffer_3_state_8portas
+--							port map(
+--										entrada => "0000000" & KEY2, 
+--										habilita =>  (Rd and Data_Address_5 and Endereco(2) and Saida_Decoder1_5), 
+--										saida => Data_IN
+--										);
 tristate_Key3 :  entity work.buffer_3_state_8portas
 							port map(
 										entrada => "0000000" & KEY3, 

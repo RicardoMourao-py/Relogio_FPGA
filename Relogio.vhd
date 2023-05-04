@@ -131,15 +131,15 @@ Chaves_e_Botoes: entity work.chaves_e_botoes
 								Data_IN => Data_IN
 							);
 -- Tratamento espcial para KEY0  ----------------------------------------------------
---Debounce: entity work.debounce_memoriza 
---					port map (
---						CLK_50 => CLOCK_50,
---						Addr => Data_Address,
---						WR => Wr,
---						KEY0 => KEY(3),
---						HabilitaLeituraKey0 => (Rd and Data_Address(5) and Saida_Decoder2(3) and Saida_Decoder1(5)),
---						leituraKey0 => Data_IN
---					);
+Debounce: entity work.debounce_memoriza 
+					port map (
+						CLK_50 => CLOCK_50,
+						Addr => Data_Address,
+						WR => Wr,
+						KEY0 => KEY(2),
+						HabilitaLeituraKey0 => (Rd and Data_Address(5) and Saida_Decoder2(2) and Saida_Decoder1(5)),
+						leituraKey0 => Data_IN
+					);
 
 ------- Base de Tempo ---------------------------------------------------------------
 limpaLeitura_bt <= (WR and Data_Address(8) and Data_Address(7) and Data_Address(6) and Data_Address(5) and Data_Address(4) and Data_Address(3) and Data_Address(2) and Data_Address(1) and Data_Address(0));

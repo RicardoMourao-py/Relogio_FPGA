@@ -24,7 +24,7 @@ architecture comportamento of CPU is
   signal CLK : std_logic;
   signal saida_endRetorno : std_logic_vector (larguraEndereco-1 downto 0);
   signal Endereco : std_logic_vector (8 downto 0); 
-  signal Sinais_Controle : std_logic_vector (11 downto 0);
+  signal Sinais_Controle : std_logic_vector (13 downto 0);
   signal proxPC : std_logic_vector (larguraEndereco-1 downto 0);
   signal saidaLogicaDesvio : std_logic_vector (1 downto 0);
   signal saidaFlagIgual : std_logic;
@@ -51,6 +51,12 @@ architecture comportamento of CPU is
   signal instrucao : std_logic_vector (15 downto 0);
   signal saida_RAM: std_logic_vector (larguraDados-1 downto 0);
   
+  --- SINAIS NOVAS INSTRU CLT, JLT
+  signal HabFlagMenor : std_logic;
+  signal saidaFlagMenor : std_logic;
+  signal saida_menor: std_logic;
+  signal JLT: std_logic;
+  
   begin
    -- O port map completo do MUX.
 	MUX1 :  entity work.muxGenerico2x1  generic map (larguraDados => larguraDados)
@@ -72,6 +78,9 @@ architecture comportamento of CPU is
 
 	FlagIgual : entity work.FlipFlop 
 				 port map (DIN => saida_zero, DOUT => saidaFlagIgual, ENABLE => HabFlagIgual, CLK => Clock, RST => '0');
+				 
+	FlagMenor : entity work.FlipFlop 
+				 port map (DIN => saida_menor, DOUT => saidaFlagMenor, ENABLE => HabFlagMenor, CLK => Clock, RST => '0');
 
 	ENDERECO_RETORNO : entity work.enderecoRetorno   generic map (larguraDados => 9)
 							port map (DIN => proxPC, DOUT => saida_endRetorno, ENABLE => habilita_escRetorno, CLK => Clock, RST => '0');
@@ -87,23 +96,25 @@ architecture comportamento of CPU is
 	-- O port map completo da ULA:
 	ULA1 : entity work.ULASomaSub  generic map(larguraDados => larguraDados)
 				 port map (entradaA => REGS_ULA_A, entradaB => MUX_REG1, saida => Saida_ULA, flagZero => 
-				 saida_zero, seletor => Operacao_ULA);
+				 saida_zero, flagMenor => saida_menor, seletor => Operacao_ULA);
 	
 	-- Falta acertar o conteudo da ROM (no arquivo memoriaROM.vhd)
 	DECODE1 : entity work.decoderInstru port map (opcode => instrucao(15 downto 12), saida => Sinais_Controle);
 	
 	LOGICA_DESVIO: entity work.logicaDesvio
-					port map(JMP => JMP, RET => RET, JSR => JSR, JEQ => JEQ, Flag => saidaFlagIgual, 
+					port map(JMP => JMP, RET => RET, JSR => JSR, JEQ => JEQ, JLT => JLT, Flag_igual => saidaFlagIgual, Flag_menor => saidaFlagMenor,
 								saida_Desvio => saidaLogicaDesvio);
 	
-	habilita_escRetorno <= Sinais_Controle(11);
-	JMP <= Sinais_Controle(10);
-	RET <= Sinais_Controle(9);
-	JSR <= Sinais_Controle(8);
-	JEQ <= Sinais_Controle(7);
-	selMUX <= Sinais_Controle(6);
-	Habilita_A <= Sinais_Controle(5);
-	Operacao_ULA <= Sinais_Controle(4 downto 3);
+	habilita_escRetorno <= Sinais_Controle(13);
+	JLT <= Sinais_Controle(12);
+	JMP <= Sinais_Controle(11);
+	RET <= Sinais_Controle(10);
+	JSR <= Sinais_Controle(9);
+	JEQ <= Sinais_Controle(8);
+	selMUX <= Sinais_Controle(7);
+	Habilita_A <= Sinais_Controle(6);
+	Operacao_ULA <= Sinais_Controle(5 downto 4); 
+	HabFlagMenor <= Sinais_Controle(3);
 	HabFlagIgual <= Sinais_Controle(2);
 	leituraRAM <= Sinais_Controle(1);
 	escritaRAM <= Sinais_Controle(0);

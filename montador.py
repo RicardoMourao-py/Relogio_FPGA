@@ -34,7 +34,7 @@ for i in linhas:
         print(linha)
     # Verifica se a linha é uma label
     elif linha[-1] == ":":
-        pass
+        pass 
     # Verifica instrução
     else:
         instrucao, reg_label = linha.split(',')[0].split(' ')[0], linha.split(',')[0].split(' ')[1]

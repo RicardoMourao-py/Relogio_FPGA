@@ -25,7 +25,7 @@ begin
 detectorKey0: work.edgeDetector(bordaSubida)
               port map (clk => CLK_50, entrada => not(KEY0), saida => SaidaDetectorKey0);
 
-limpaLeituraKey0 <= WR and Addr(8) and Addr(7) and Addr(6) and Addr(5) and Addr(4) and Addr(3) and Addr(2) and Addr(1) and Addr(0);
+limpaLeituraKey0 <= WR and Addr(8) and Addr(7) and Addr(6) and Addr(5) and Addr(4) and Addr(3) and Addr(2) and not(Addr(1)) and Addr(0);
 
 FF_key : entity work.FlipFlop
          port map (DIN =>  '1',
