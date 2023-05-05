@@ -133,7 +133,7 @@ Chaves_e_Botoes: entity work.chaves_e_botoes
 -- Tratamento espcial para KEY0  ----------------------------------------------------
 Debounce: entity work.debounce_memoriza 
 					port map (
-						CLK_50 => CLOCK_50,
+						CLK_50 => CLK,
 						Addr => Data_Address,
 						WR => Wr,
 						KEY0 => KEY(2),
@@ -144,7 +144,7 @@ Debounce: entity work.debounce_memoriza
 ------- Base de Tempo ---------------------------------------------------------------
 limpaLeitura_bt <= (WR and Data_Address(8) and Data_Address(7) and Data_Address(6) and Data_Address(5) and Data_Address(4) and Data_Address(3) and Data_Address(2) and Data_Address(1) and Data_Address(0));
 
-interfaceBaseTempoLento : entity work.divisorGenerico_e_Interface generic map(divisor => 25000000)
+interfaceBaseTempoNormal : entity work.divisorGenerico_e_Interface generic map(divisor => 25000000)
               port map (
 					  clk => CLK,
 					  habilitaLeitura => (Rd and Data_Address(5) and Saida_Decoder2(0) and Saida_Decoder1(5)),

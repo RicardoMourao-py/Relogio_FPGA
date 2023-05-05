@@ -28,14 +28,58 @@ LDI R0, $5    -- Carrega o registrador com o valor cinco
 STA R0, @5    -- MEM[5] = R0 = 5
 LDI R0, $9    -- Carrega o registrador com o valor nove
 STA R0, @9    -- MEM[9] = R0 = 9
-LDI R0, $0    -- Carrega o registrador com o valor zero
-STA R0, @10    -- MEM[10] = R0 = 0
-STA R0, @11    -- MEM[11] = R0 = 0
-STA R0, @12    -- MEM[12] = R0 = 0
-STA R0, @13    -- MEM[13] = R0 = 0
-STA R0, @14    -- MEM[14] = R0 = 0
-STA R0, @15    -- MEM[15] = R0 = 0
 
+LDI R1, $0    -- Carrega o registrador com o valor zero
+LDI R2, $0    -- Carrega o registrador com o valor zero
+LDI R3, $0    -- Carrega o registrador com o valor zero
+LDI R4, $0    -- Carrega o registrador com o valor zero
+LDI R5, $0    -- Carrega o registrador com o valor zero
+LDI R6, $0    -- Carrega o registrador com o valor zero
+LDI R7, $0    -- Carrega o registrador com o valor zero
+
+------------------------------------ AJUSTE HORARIO  -----------------------------------------------
+-- Ajuste na unidade dos segundos
+AJUSTE_UNIDADE_SEGUNDOS:
+LDI R0, $1    --  Carrega no registrador o valor um
+STA R0, @256  -- Acende LEDR0
+
+LDA R0, @354      -- Carrega o acumulador com a leitura do botão KEY2
+ANDI R0, $1   -- LIMPA LIXO KEY2
+CEQ R0, @1    -- Compara com valor armazenado em MEM[1]
+JEQ @AJUSTE_DEZENA_SEGUNDOS   -- Pula para SUB-rotina limite dezenas
+JMP @AJUSTE_UNIDADE_SEGUNDOS 
+
+-- Ajuste na dezena dos segundos
+AJUSTE_DEZENA_SEGUNDOS:
+STA R0, @509   -- Limpa KEY2
+LDA R1, @320  -- Faz a leitura das chaves SW7~SW0
+STA R1, @288  -- Escreve em HEX0 o valor do registrador
+
+AJUSTE_DEZENA_SEGUNDOS_CONT:
+LDI R0, $2    --  Carrega no registrador o valor dois
+STA R0, @256  -- Acende LEDR1
+
+LDA R0, @354      -- Carrega o acumulador com a leitura do botão KEY2
+ANDI R0, $1   -- LIMPA LIXO KEY2
+CEQ R0, @1   -- Compara com valor armazenado em MEM[1]
+JEQ @AJUSTE_UNIDADE_MINUTO   -- Pula para SUB-rotina limite dezenas
+JMP @AJUSTE_DEZENA_SEGUNDOS_CONT 
+
+-- Ajuste na unidade dos minutos
+AJUSTE_UNIDADE_MINUTO:
+STA R0, @509   -- Limpa KEY2
+LDA R2, @320  -- Faz a leitura das chaves SW7~SW0
+STA R2, @289  -- Escreve em HEX1 o valor do registrador
+
+AJUSTE_UNIDADE_MINUTO_CONT:
+LDI R0, $4    --  Carrega no registrador o valor dois
+STA R0, @256  -- Acende LEDR1
+
+LDA R0, @354      -- Carrega o acumulador com a leitura do botão KEY2
+ANDI R0, $1   -- LIMPA LIXO KEY2
+CEQ R0, @1   -- Compara com valor armazenado em MEM[1]
+JEQ @INCREMENTA_SEGUNDO_UNIDADE   -- Pula para SUB-rotina limite dezenas
+JMP @AJUSTE_UNIDADE_MINUTO_CONT
 ------------------------------------ LOGICA ---------------------------------------------------------
 -- Realiza a leitura do segundo
 LEITURA_SEGUNDO:
@@ -44,10 +88,10 @@ CLT R0, @1    -- Se clicou no KEY3 (menor que um)
 JLT @LEITURA_RAPIDA
 
 LDA R0, @356     --le FPGA_RSET
-CEQ R0, @0    -- Se clicou no FPGA_RSET
-JEQ @SETUP
+CLT R0, @1    -- Se clicou no FPGA_RSET
+JLT @SETUP
 
-LDA R7, @352  -- Carrega o registrador com a leitura do segundo (Lento)
+LDA R7, @352  -- Carrega o registrador com a leitura do segundo (Normal)
 ANDI R7, $1   -- Limpa lixo da leitura segundo
 CEQ R7, @1    -- Se o registrador for igual a 1
 JEQ @INCREMENTA_SEGUNDO_UNIDADE
@@ -65,29 +109,26 @@ JMP @LEITURA_SEGUNDO
 INCREMENTA_SEGUNDO_UNIDADE:
 STA R0, @511  -- Limpa o flipflop dos segundos (KEY0)
 STA R0, @510  -- Limpa o flipflop dos segundos (KEY1)
-LDA R1, @10   -- Carrega o registrador com MEM[10]
 
 CEQ R1, @9    -- Se o registrador for igual a 9
 JEQ @INCREMENTA_SEGUNDO_DEZENA
 
 SOMA R1, @1   -- R1 = R1 + MEM[1]
-STA R1, @10  -- Armazena o valor do registrador em MEM[10] (unidade segundo)
 STA R1, @288  -- Armazena o valor do registrador em HEX0
 JMP @LEITURA_SEGUNDO
 
 -- Dezena dos segundos
 INCREMENTA_SEGUNDO_DEZENA:
-LDA R2, @11   -- Carrega o registrador com MEM[11]
+STA R0, @511  -- Limpa o flipflop dos segundos (KEY0)
+STA R0, @510  -- Limpa o flipflop dos segundos (KEY1)
+
 CEQ R2, @5    -- Se o registrador for igual a 5
 JEQ @INCREMENTA_MINUTO_UNIDADE
 
 LDI R1, $0    -- Carrega o registrador com o valor zero
-STA R1, @10   -- Armazena o valor do registrador em MEM[10] (unidade segundo)
 STA R1, @288  -- Armazena o valor do registrador em HEX0
 
-LDA R2, @11   -- Carrega o registrador com MEM[11]
 SOMA R2, @1   -- R2 = R2 + MEM[1]
-STA R2, @11  -- Armazena o valor do registrador em MEM[11] (dezena segundo)
 STA R2, @289  -- Armazena o valor do registrador em HEX1
 JMP @LEITURA_SEGUNDO
 
