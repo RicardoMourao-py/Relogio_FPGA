@@ -24,10 +24,16 @@ LDI R0, $2    -- Carrega o registrador com o valor dois
 STA R0, @2    -- MEM[2] = R0 = 2
 LDI R0, $3    -- Carrega o registrador com o valor tres
 STA R0, @3    -- MEM[3] = R0 = 3
+LDI R0, $4    -- Carrega o registrador com o valor quatro
+STA R0, @4    -- MEM[4] = R0 = 4
 LDI R0, $5    -- Carrega o registrador com o valor cinco
 STA R0, @5    -- MEM[5] = R0 = 5
+LDI R0, $6    -- Carrega o registrador com o valor seis
+STA R0, @6    -- MEM[6] = R0 = 6
 LDI R0, $9    -- Carrega o registrador com o valor nove
 STA R0, @9    -- MEM[9] = R0 = 9
+LDI R0, $10    -- Carrega o registrador com o valor dez
+STA R0, @10    -- MEM[10] = R0 = 10
 
 LDI R1, $0    -- Carrega o registrador com o valor zero
 LDI R2, $0    -- Carrega o registrador com o valor zero
@@ -69,6 +75,8 @@ JMP @LEITURA_SEGUNDO
 -------- Conta os segundos -------------------------
 -- Unidade dos segundos
 INCREMENTA_SEGUNDO_UNIDADE:
+LDI R0, $0    -- Carrega registrador com zero 
+STA R0, @256  -- Apaga LEDS
 STA R0, @511  -- Limpa o flipflop dos segundos (KEY0)
 STA R0, @510  -- Limpa o flipflop dos segundos (KEY1)
 STA R0, @509   -- Limpa KEY2
@@ -76,7 +84,7 @@ STA R0, @509   -- Limpa KEY2
 CEQ R1, @9    -- Se o registrador for igual a 9
 JEQ @INCREMENTA_SEGUNDO_DEZENA
 
-SOMA R1, @1   -- R1 = R1 + MEM[1]
+ADDI R1, $1   -- R1 = R1 + MEM[1]
 STA R1, @288  -- Armazena o valor do registrador em HEX0
 JMP @LEITURA_SEGUNDO
 
@@ -88,7 +96,7 @@ JEQ @INCREMENTA_MINUTO_UNIDADE
 LDI R1, $0    -- Carrega o registrador com o valor zero
 STA R1, @288  -- Armazena o valor do registrador em HEX0
 
-SOMA R2, @1   -- R2 = R2 + MEM[1]
+ADDI R2, $1   -- R2 = R2 + MEM[1]
 STA R2, @289  -- Armazena o valor do registrador em HEX1
 JMP @LEITURA_SEGUNDO
 
@@ -106,7 +114,7 @@ LDI R2, $0    -- Carrega o registrador com o valor zero
 STA R2, @11   -- Armazena o valor do registrador em MEM[11] (dezena segundo)
 STA R2, @289  -- Armazena o valor do registrador em HEX1
 
-SOMA R3, @1   -- R3 = R3 + MEM[1]
+ADDI R3, $1   -- R3 = R3 + MEM[1]
 STA R3, @290  -- Armazena o valor do registrador em HEX2
 JMP @LEITURA_SEGUNDO
 
@@ -124,7 +132,7 @@ STA R2, @289  -- Armazena o valor do registrador em HEX1
 LDI R3, $0    -- Carrega o registrador com o valor zero
 STA R3, @290  -- Armazena o valor do registrador em HEX2
 
-SOMA R4, @1   -- R4 = R4 + MEM[1]
+ADDI R4, $1   -- R4 = R4 + MEM[1]
 STA R4, @291  -- Armazena o valor do registrador em HEX3
 JMP @LEITURA_SEGUNDO
 
@@ -150,7 +158,7 @@ STA R3, @290  -- Armazena o valor do registrador em HEX2
 LDI R4, $0    -- Carrega o registrador com o valor zero
 STA R4, @291  -- Armazena o valor do registrador em HEX3
 
-SOMA R5, @1   -- R5 = R5 + MEM[1]
+ADDI R5, $1   -- R5 = R5 + MEM[1]
 STA R5, @292  -- Armazena o valor do registrador em HEX4
 JMP @LEITURA_SEGUNDO
 
@@ -171,7 +179,7 @@ STA R4, @291  -- Armazena o valor do registrador em HEX3
 LDI R5, $0    -- Carrega o registrador com o valor zero
 STA R5, @292  -- Armazena o valor do registrador em HEX4
 
-SOMA R6, @1   -- R6 = R6 + MEM[1]
+ADDI R6, $1   -- R6 = R6 + MEM[1]
 STA R6, @293  -- Armazena o valor do registrador em HEX5
 JMP @LEITURA_SEGUNDO
 
@@ -184,16 +192,24 @@ JMP @CONTINUA
 ------------------------------------ AJUSTE HORARIO  -----------------------------------------------
 -- Ajuste na unidade dos segundos
 AJUSTE_UNIDADE_SEGUNDOS:
-STA R0, @509   -- Limpa KEY2
+LDI R0, $0    -- Carrega o registrador com o valor zero
+STA R0, @288  -- Armazena o valor do registrador em HEX0
+STA R0, @289  -- Armazena o valor do registrador em HEX1
+STA R0, @290  -- Armazena o valor do registrador em HEX2
+STA R0, @291  -- Armazena o valor do registrador em HEX3
+STA R0, @292  -- Armazena o valor do registrador em HEX4
+STA R0, @293  -- Armazena o valor do registrador em HEX5
 
+STA R0, @509   -- Limpa KEY2
 LDI R0, $1    --  Carrega no registrador o valor um
 STA R0, @256  -- Acende LEDR0
 
+AJUSTE_UNIDADE_SEGUNDOS_CONT:
 LDA R0, @354      -- Carrega o acumulador com a leitura do botão KEY2
 ANDI R0, $1   -- LIMPA LIXO KEY2
 CEQ R0, @1    -- Compara com valor armazenado em MEM[1]
-JEQ @AJUSTE_DEZENA_SEGUNDOS   -- Pula para SUB-rotina limite dezenas
-JMP @AJUSTE_UNIDADE_SEGUNDOS 
+JEQ @AJUSTE_DEZENA_SEGUNDOS   
+JMP @AJUSTE_UNIDADE_SEGUNDOS_CONT 
 
 -- Ajuste na dezena dos segundos
 AJUSTE_DEZENA_SEGUNDOS:

@@ -23,6 +23,7 @@ architecture comportamento of decoderInstru is
   constant ANDI : std_logic_vector(3 downto 0) := "1100";
   constant CLT  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1011";
   constant JLT  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1110";
+  constant ADDI  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1111";
 
   begin
 saida <= "00000000000000" WHEN opcode = NOP else
@@ -39,5 +40,6 @@ saida <= "00000000000000" WHEN opcode = NOP else
 			"00000010110000" WHEN opcode = ANDI ELSE
 			"00000000001010" WHEN opcode = CLT ELSE
          "01000000000000" WHEN opcode = JLT ELSE
+			"00000011010000" WHEN opcode = ADDI ELSE
          "00000000000000";  -- NOP para os opcodes Indefinidos
 end architecture;
