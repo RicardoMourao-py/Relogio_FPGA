@@ -13,3 +13,7 @@ Projeto consiste em implementar funcionalidades de um relógio na FPGA.
 
 ## Debounce
 - KEY2, apenas, utiliza debounce.
+
+## Vídeo
+
+https://youtu.be/d3ARWCVkws8
